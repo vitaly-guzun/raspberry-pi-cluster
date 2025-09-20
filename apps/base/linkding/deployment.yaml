@@ -29,10 +29,10 @@ spec:
           # securityContext:
           #   allowPrivilegeEscalation: false
 
-          # volumeMounts:
-          #   - mountPath: /etc/linkding/data
-          #     name: linkding-storage
-      # volumes:
-      #   - name: linkding-storage
-      #     persistentVolumeClaim:
-      #       claimName: linkding-storage-pvc
+          volumeMounts:
+            - mountPath: /etc/linkding/data
+              name: linkding-storage
+      volumes:
+        - name: linkding-storage
+          persistentVolumeClaim:
+            claimName: linkding-storage-pvc
