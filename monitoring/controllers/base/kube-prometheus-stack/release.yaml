@@ -34,4 +34,7 @@ spec:
         ingressClassName: traefik
         hosts:
           - grafana.vitalyguzun-homelab.com
-        tls: []
+        tls:
+          - secretName: grafana-tls-secret
+            hosts:
+              - grafana.vitalyguzun-homelab.com
