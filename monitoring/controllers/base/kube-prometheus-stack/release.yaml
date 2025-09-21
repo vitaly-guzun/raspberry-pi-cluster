@@ -27,11 +27,11 @@ spec:
           kind: PrometheusRule
   values:
     grafana:
-      adminPassword: test
+      adminPassword: mypassword
 
-      # ingress:
-      #   enabled: true
-      #   ingressClassName: traefik
-      #   hosts:
-      #     - grafana.vitalyguzun-homelab.com
-      #   tls: []
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - grafana.vitalyguzun-homelab.com
+        tls: []
