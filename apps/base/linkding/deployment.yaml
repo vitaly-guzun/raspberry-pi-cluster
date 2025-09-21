@@ -22,9 +22,9 @@ spec:
           image: sissbruecker/linkding:1.31.0
           ports:
             - containerPort: 9090
-          # envFrom:
-          #   - secretRef:
-          #       name: linkding-container-env
+          envFrom:
+            - secretRef:
+                name: linkding-container-env-secret
 
           securityContext:
             allowPrivilegeEscalation: false
