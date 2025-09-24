@@ -12,10 +12,10 @@ spec:
       labels:
         app: audiobookshelf
     spec:
-      # securityContext:
-      #   fsGroup: 33 # www-data group ID
-      #   runAsUser: 33 # www-data user ID
-      #   runAsGroup: 33 # www-data group ID
+      securityContext:
+        fsGroup: 1000 # node group ID
+        runAsUser: 1000 # node user ID
+        runAsGroup: 1000 # node group ID
 
       containers:
         - name: audiobookshelf
@@ -36,11 +36,12 @@ spec:
               name: audiobookshelf-metadata
             - mountPath: /audiobooks
               name: audiobookshelf-audiobooks
+
+          securityContext:
+            allowPrivilegeEscalation: false
       
       restartPolicy: Always
 
-          # securityContext:
-          #   allowPrivilegeEscalation: false
       volumes:
         - name: audiobookshelf-config
           persistentVolumeClaim:
