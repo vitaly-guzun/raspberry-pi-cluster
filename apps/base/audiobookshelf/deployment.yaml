@@ -19,35 +19,40 @@ spec:
 
       containers:
         - name: audiobookshelf
-          image: ghcr.io/advplyr/audiobookshelf:latest
+          image: ghcr.io/advplyr/audiobookshelf:2.29.0
+
           ports:
             - containerPort: 3005
+              protocol: TCP
+
           envFrom:
             - configMapRef:
                 name: audiobookshelf-configmap
+      
+      restartPolicy: Always
 
           # securityContext:
           #   allowPrivilegeEscalation: false
 
-          volumeMounts:
-            - mountPath: /etc/audiobookshelf/audiobooks
-              name: audiobookshelf-audiobooks
-            - mountPath: /etc/audiobookshelf/podcasts
-              name: audiobookshelf-podcasts
-            - mountPath: /etc/audiobookshelf/config
-              name: audiobookshelf-config
-            - mountPath: /etc/audiobookshelf/metadata
-              name: audiobookshelf-metadata
-      volumes:
-        - name: audiobookshelf-audiobooks
-          persistentVolumeClaim:
-            claimName: audiobooks-storage-pvc
-        - name: audiobookshelf-podcasts
-          persistentVolumeClaim:
-            claimName: podcasts-storage-pvc
-        - name: audiobookshelf-config
-          persistentVolumeClaim:
-            claimName: config-storage-pvc
-        - name: audiobookshelf-metadata
-          persistentVolumeClaim:
-            claimName: metadata-storage-pvc
+      #     volumeMounts:
+      #       - mountPath: /etc/audiobookshelf/audiobooks
+      #         name: audiobookshelf-audiobooks
+      #       - mountPath: /etc/audiobookshelf/podcasts
+      #         name: audiobookshelf-podcasts
+      #       - mountPath: /etc/audiobookshelf/config
+      #         name: audiobookshelf-config
+      #       - mountPath: /etc/audiobookshelf/metadata
+      #         name: audiobookshelf-metadata
+      # volumes:
+      #   - name: audiobookshelf-audiobooks
+      #     persistentVolumeClaim:
+      #       claimName: audiobooks-storage-pvc
+      #   - name: audiobookshelf-podcasts
+      #     persistentVolumeClaim:
+      #       claimName: podcasts-storage-pvc
+      #   - name: audiobookshelf-config
+      #     persistentVolumeClaim:
+      #       claimName: config-storage-pvc
+      #   - name: audiobookshelf-metadata
+      #     persistentVolumeClaim:
+      #       claimName: metadata-storage-pvc

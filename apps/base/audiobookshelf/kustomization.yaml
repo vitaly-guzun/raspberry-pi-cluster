@@ -2,11 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
-  - configmap.yaml
   - deployment.yaml
   - service.yaml
-  - storages/audiobooks-storage.yaml
-  - storages/config-storage.yaml
-  - storages/metadata-storage.yaml
-  - storages/podcasts-storage.yaml
+  - configmap.yaml
+  # - storages/audiobooks-storage.yaml
+  # - storages/config-storage.yaml
+  # - storages/metadata-storage.yaml
+  # - storages/podcasts-storage.yaml
  
