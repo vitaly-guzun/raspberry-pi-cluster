@@ -9,3 +9,4 @@ resources:
   - storages/config-storage.yaml
   - storages/metadata-storage.yaml
   - storages/podcasts-storage.yaml
+ 
