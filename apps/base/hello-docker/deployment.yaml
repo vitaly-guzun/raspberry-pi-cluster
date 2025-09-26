@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-docker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-docker
+  template:
+    metadata:
+      labels:
+        app: hello-docker
+    spec:
+      containers:
+        - name: hello-docker
+          image: vitalyguzun/hello-world:latest
