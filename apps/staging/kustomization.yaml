@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - audiobookshelf
   - linkding
-  - hello-docker
+  # - hello-docker
