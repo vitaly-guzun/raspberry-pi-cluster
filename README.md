@@ -35,7 +35,7 @@ The architecture follows the GitOps pattern where the desired state is defined i
 ## 📁 Project Structure
 
 ```
-rasberry-pi-cluster/
+raspberry-pi-cluster/
 ├── apps/                          # Application definitions
 │   ├── base/                      # Base application configurations
 │   │   ├── audiobookshelf/        # Audiobookshelf app

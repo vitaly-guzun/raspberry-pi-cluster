@@ -14,7 +14,7 @@ spec:
             - name: renovate
               image: renovate/renovate:latest
               args:
-                - vitaly-guzun/rasberry-pi-cluster
+                - vitaly-guzun/raspberry-pi-cluster
 
               envFrom:
                 - secretRef:

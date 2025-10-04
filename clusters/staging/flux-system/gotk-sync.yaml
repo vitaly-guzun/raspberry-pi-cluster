@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/vitaly-guzun/rasberry-pi-cluster
+  url: ssh://git@github.com/vitaly-guzun/raspberry-pi-cluster
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
