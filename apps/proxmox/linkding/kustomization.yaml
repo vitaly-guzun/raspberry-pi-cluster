@@ -4,6 +4,8 @@ namespace: linkding
 resources:
   - ../../base/linkding
   - linkding-container-env-secret.yaml
+  - cloudflare.yaml
+  - cloudflare-secret.yaml
 images:
   - name: sissbruecker/linkding
     newTag: 1.44.1
