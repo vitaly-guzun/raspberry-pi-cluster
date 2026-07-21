@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: linkding
+resources:
+  - ../../base/linkding
+  - linkding-container-env-secret.yaml
+images:
+  - name: sissbruecker/linkding
+    newTag: 1.44.1
