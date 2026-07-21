@@ -3,3 +3,11 @@ kind: Kustomization
 namespace: renovate
 resources:
   - ../../base/renovate/
+patches:
+  - target:
+      kind: CronJob
+      name: renovate
+    patch: |-
+      - op: replace
+        path: /spec/suspend
+        value: true
