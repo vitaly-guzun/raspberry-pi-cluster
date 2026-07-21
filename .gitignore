@@ -1,3 +1,4 @@
 tls.*
 values.yaml
 temp
+.env
