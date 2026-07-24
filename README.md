@@ -17,7 +17,6 @@ The architecture follows the GitOps pattern where the desired state is defined i
 ### Applications
 - **Audiobookshelf** (`ghcr.io/advplyr/audiobookshelf:2.29.0`): Self-hosted audiobook and e-book server
 - **Linkding** (`sissbruecker/linkding:1.43.0`): Self-hosted bookmark manager
-- **Hello Docker** (`vitalyguzun/hello-world:latest`): Test application for experiments
 
 ### Networking & Security
 - **Cloudflare Tunnel** (`cloudflare/cloudflared:latest`): Secure tunneling for external access
@@ -39,11 +38,9 @@ raspberry-pi-cluster/
 ├── apps/                          # Application definitions
 │   ├── base/                      # Base application configurations
 │   │   ├── audiobookshelf/        # Audiobookshelf app
-│   │   ├── hello-docker/          # Test application
 │   │   └── linkding/              # Linkding bookmark manager
 │   └── staging/                   # Staging environment overrides
 │       ├── audiobookshelf/        # Cloudflare tunnel config
-│       ├── hello-docker/          # Staging overrides
 │       └── linkding/              # Ingress and tunnel config
 ├── clusters/                      # Cluster-specific configurations
 │   └── staging/                   # Staging cluster config
@@ -83,7 +80,6 @@ graph TD
 
     D --> G[Audiobookshelf]
     D --> H[Linkding]
-    D --> I[Hello Docker]
 
     E --> J[Renovate CronJob]
 
