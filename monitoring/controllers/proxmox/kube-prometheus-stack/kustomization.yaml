@@ -3,3 +3,19 @@ kind: Kustomization
 namespace: monitoring
 resources:
   - ../../base/kube-prometheus-stack/
+  - grafana-admin-secret.yaml
+patches:
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: kube-prometheus-stack
+    patch: |-
+      - op: remove
+        path: /spec/values/grafana/adminPassword
+      - op: add
+        path: /spec/values/grafana/admin
+        value:
+          existingSecret: grafana-admin-credentials
+          userKey: admin-user
+          passwordKey: admin-password
