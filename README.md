@@ -1,129 +1,94 @@
-# Raspberry Pi Kubernetes Cluster
+# Proxmox Kubernetes Cluster
 
-This is my home GitOps-managed Kubernetes cluster running on Raspberry Pi hardware, featuring self-hosted applications, monitoring, and automated dependency management.
+GitOps configuration for a self-hosted Kubernetes cluster running on Proxmox.
+Flux continuously reconciles the desired state from the `main` branch.
 
-## 🏗️ Architecture Overview
+## Stack
 
-The architecture follows the GitOps pattern where the desired state is defined in Git and automatically synchronized to the cluster.
+- Kubernetes and Flux CD
+- Kustomize and Helm
+- SOPS with Age for encrypted secrets
+- Cloudflare Tunnel for external access
+- Prometheus and Grafana for monitoring
+- Renovate for dependency updates
 
-## 🛠️ Technologies Used
+## Applications
 
-### Core Infrastructure
-- **Kubernetes**: Container orchestration platform
-- **Flux CD**: GitOps operator for continuous deployment
-- **Kustomize**: Configuration management and templating
-- **Helm**: Package manager for Kubernetes applications
+- [Audiobookshelf](https://www.audiobookshelf.org/) — audiobook and e-book server
+- [Linkding](https://linkding.link/) — bookmark manager
 
-### Applications
-- **Audiobookshelf** (`ghcr.io/advplyr/audiobookshelf:2.29.0`): Self-hosted audiobook and e-book server
-- **Linkding** (`sissbruecker/linkding:1.43.0`): Self-hosted bookmark manager
+## Repository structure
 
-### Networking & Security
-- **Cloudflare Tunnel** (`cloudflare/cloudflared:latest`): Secure tunneling for external access
-- **SOPS**: Secrets management with encryption
-
-### Monitoring & Observability
-- **Prometheus**: Metrics collection and storage
-- **Grafana**: Metrics visualization and dashboards
-- **Kube-Prometheus-Stack**: Complete monitoring solution
-
-### Automation & Maintenance
-- **Renovate** (`renovate/renovate:latest`): Automated dependency updates
-- **CronJobs**: Scheduled maintenance tasks
-
-## 📁 Project Structure
-
-```
-raspberry-pi-cluster/
-├── apps/                          # Application definitions
-│   ├── base/                      # Base application configurations
-│   │   ├── audiobookshelf/        # Audiobookshelf app
-│   │   └── linkding/              # Linkding bookmark manager
-│   └── staging/                   # Staging environment overrides
-│       ├── audiobookshelf/        # Cloudflare tunnel config
-│       └── linkding/              # Ingress and tunnel config
-├── clusters/                      # Cluster-specific configurations
-│   └── staging/                   # Staging cluster config
-│       ├── apps.yaml              # Application deployments
-│       ├── infrastructure.yaml    # Infrastructure controllers
-│       ├── monitoring.yaml        # Monitoring stack
-│       └── flux-system/           # Flux CD system components
-├── infrastructure/                # Infrastructure controllers
+```text
+.
+├── apps/
+│   ├── base/                       # Reusable application manifests
+│   └── proxmox/                    # Proxmox application overlays
+├── clusters/
+│   └── proxmox/                    # Flux entry point for the cluster
+├── infrastructure/
 │   └── controllers/
-│       ├── base/                  # Base infrastructure
-│       └── staging/               # Staging overrides
-├── monitoring/                    # Monitoring configurations
-│   ├── configs/                   # Monitoring configs
-│   └── controllers/               # Monitoring controllers
-└── temp/                          # Temporary files
+│       ├── base/                   # Reusable infrastructure manifests
+│       └── proxmox/                # Proxmox infrastructure overlay
+├── monitoring/
+│   ├── configs/
+│   │   └── proxmox/                # Monitoring configuration
+│   └── controllers/
+│       ├── base/                   # Monitoring Helm sources and releases
+│       └── proxmox/                # Proxmox monitoring overlay
+└── renovate.json
 ```
 
-## 🔄 GitOps Workflow
+## Reconciliation flow
 
-The project follows a GitOps workflow where:
-
-1. **Configuration as Code**: All cluster configurations are stored in Git
-2. **Automated Sync**: Flux CD continuously monitors the Git repository
-3. **Declarative State**: Desired state is defined in YAML manifests
-4. **Automated Deployment**: Changes are automatically applied to the cluster
-
-## 🚀 Deployment Process
-
-### 1. Cluster Bootstrap
 ```mermaid
-graph TD
-    A[Git Repository] --> B[Flux CD Controller]
-    B --> C[Kustomization Resources]
-    C --> D[Application Deployments]
-    C --> E[Infrastructure Controllers]
-    C --> F[Monitoring Stack]
-
-    D --> G[Audiobookshelf]
-    D --> H[Linkding]
-
-    E --> J[Renovate CronJob]
-
-    F --> K[Prometheus]
-    F --> L[Grafana]
+flowchart TD
+    Git["Git repository"] --> Flux["Flux CD"]
+    Flux --> Cluster["clusters/proxmox"]
+    Cluster --> Apps["apps/proxmox"]
+    Cluster --> Infrastructure["infrastructure/controllers/proxmox"]
+    Cluster --> MonitoringControllers["monitoring/controllers/proxmox"]
+    MonitoringControllers --> MonitoringConfigs["monitoring/configs/proxmox"]
 ```
 
-### 2. Application Deployment Flow
-```mermaid
-sequenceDiagram
-    participant Dev as Developer
-    participant Git as Git Repository
-    participant Flux as Flux CD
-    participant K8s as Kubernetes
-    participant App as Application Pods
-    
-    Dev->>Git: Push configuration changes
-    Git->>Flux: Poll for changes (1m interval)
-    Flux->>K8s: Apply Kustomization
-    K8s->>App: Deploy/Update applications
-    App-->>K8s: Health status
-    K8s-->>Flux: Deployment status
-    Flux-->>Git: Update status annotations
+The root Flux Kustomization is defined in
+`clusters/proxmox/flux-system/gotk-sync.yaml`. It reconciles
+`clusters/proxmox`, which in turn manages applications, infrastructure, and
+monitoring.
+
+## Secrets
+
+Secrets committed to the repository are encrypted with SOPS. Flux decrypts
+them in the cluster using the `sops-age` secret in the `flux-system`
+namespace.
+
+Do not commit unencrypted credentials, private keys, local `.env` files, or
+generated TLS files.
+
+## Bootstrap
+
+Bootstrap Flux against the Proxmox cluster and this repository:
+
+```shell
+flux bootstrap github \
+  --owner=vitaly-guzun \
+  --repository=raspberry-pi-cluster \
+  --branch=main \
+  --path=clusters/proxmox \
+  --personal
 ```
 
-## 🔧 Key Features
+Before bootstrapping, make sure the target Kubernetes context is selected and
+the SOPS Age key is available to Flux as `flux-system/sops-age`.
 
-### Security
-- **Non-root containers**: All applications run with specific user IDs
-- **Security contexts**: Restricted privilege escalation
-- **Encrypted secrets**: SOPS encryption for sensitive data
-- **TLS termination**: Secure communication with Cloudflare
+## Validation
 
-### High Availability
-- **Multiple replicas**: Cloudflare tunnel runs with 2 replicas
-- **Health checks**: Liveness and readiness probes
-- **Persistent storage**: PVCs for data persistence
+Render the cluster configuration locally:
 
-### Monitoring
-- **Comprehensive metrics**: Prometheus collects cluster and application metrics
-- **Visualization**: Grafana dashboards for monitoring
-- **Alerting**: Built-in alerting rules for critical issues
-
-### Automation
-- **Dependency updates**: Renovate automatically updates container images
-- **GitOps sync**: Automatic deployment of configuration changes
-- **Scheduled maintenance**: CronJob-based maintenance tasks
+```shell
+kubectl kustomize clusters/proxmox
+kubectl kustomize apps/proxmox
+kubectl kustomize infrastructure/controllers/proxmox
+kubectl kustomize monitoring/controllers/proxmox
+kubectl kustomize monitoring/configs/proxmox
+```

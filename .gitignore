@@ -2,3 +2,4 @@ tls.*
 values.yaml
 temp
 .env
+.DS_Store
