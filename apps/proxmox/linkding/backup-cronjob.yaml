@@ -1,0 +1,96 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: linkding-backup
+spec:
+  schedule: "15 3 * * *"
+  timeZone: Europe/Amsterdam
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 21600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 3600
+      template:
+        metadata:
+          labels:
+            app: linkding-backup
+        spec:
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app: linkding
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            fsGroup: 33
+            runAsGroup: 33
+            runAsNonRoot: true
+            runAsUser: 33
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: backup
+              image: sissbruecker/linkding:1.45.0
+              workingDir: /etc/linkding
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  umask 077
+                  timestamp="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
+                  temporary_file="/tmp/linkding-${timestamp}.zip"
+                  partial_file="/backups/linkding/linkding-${timestamp}.zip.partial"
+                  backup_file="/backups/linkding/linkding-${timestamp}.zip"
+
+                  trap 'rm -f "${temporary_file}" "${partial_file}"' EXIT
+                  mkdir -p /backups/linkding
+
+                  python manage.py full_backup "${temporary_file}"
+                  python -m zipfile -t "${temporary_file}"
+                  cp "${temporary_file}" "${partial_file}"
+                  mv "${partial_file}" "${backup_file}"
+                  test -s "${backup_file}"
+                  echo "Backup created: ${backup_file}"
+              env:
+                - name: PYTHONDONTWRITEBYTECODE
+                  value: "1"
+                - name: TMPDIR
+                  value: /tmp
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                  ephemeral-storage: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+                  ephemeral-storage: 2Gi
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+              volumeMounts:
+                - name: linkding-data
+                  mountPath: /etc/linkding/data
+                - name: synology-backups
+                  mountPath: /backups
+                - name: temporary-storage
+                  mountPath: /tmp
+          restartPolicy: OnFailure
+          volumes:
+            - name: linkding-data
+              persistentVolumeClaim:
+                claimName: linkding-storage-pvc-v1
+            - name: synology-backups
+              nfs:
+                server: 192.168.1.59
+                path: /volume1/backups
+            - name: temporary-storage
+              emptyDir:
+                sizeLimit: 2Gi

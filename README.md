@@ -11,11 +11,16 @@ Flux continuously reconciles the desired state from the `main` branch.
 - Cloudflare Tunnel for external access
 - Prometheus and Grafana for monitoring
 - Renovate for dependency updates
+- Synology NAS for NFS backups and media storage
 
 ## Applications
 
 - [Audiobookshelf](https://www.audiobookshelf.org/) — audiobook and e-book server
 - [Linkding](https://linkding.link/) — bookmark manager
+- [Linkding backups](apps/proxmox/linkding/BACKUP.md) — daily full backups to
+  Synology over NFS
+- [Synology media automation](synology/media-automation/README.md) — qBittorrent
+  and Radarr project for automatic movie imports
 
 ## Repository structure
 
@@ -24,6 +29,8 @@ Flux continuously reconciles the desired state from the `main` branch.
 ├── apps/
 │   ├── base/                       # Reusable application manifests
 │   └── proxmox/                    # Proxmox application overlays
+│       ├── audiobookshelf/
+│       └── linkding/               # Linkding overlay and backup CronJob
 ├── clusters/
 │   └── proxmox/                    # Flux entry point for the cluster
 ├── infrastructure/
@@ -36,6 +43,8 @@ Flux continuously reconciles the desired state from the `main` branch.
 │   └── controllers/
 │       ├── base/                   # Monitoring Helm sources and releases
 │       └── proxmox/                # Proxmox monitoring overlay
+├── synology/
+│   └── media-automation/           # qBittorrent + Radarr Compose project
 └── renovate.json
 ```
 
@@ -55,6 +64,53 @@ The root Flux Kustomization is defined in
 `clusters/proxmox/flux-system/gotk-sync.yaml`. It reconciles
 `clusters/proxmox`, which in turn manages applications, infrastructure, and
 monitoring.
+
+## Runtime architecture
+
+```mermaid
+flowchart LR
+    Cloudflare["Cloudflare Tunnel"]
+
+    subgraph K3s["Proxmox k3s cluster"]
+        Linkding["Linkding"] -->|"application data"| LinkdingPVC["Linkding local-path PVC"]
+        Backup["Daily backup CronJob<br/>03:15 Europe/Amsterdam"] -->|"reads"| LinkdingPVC
+        Audiobookshelf["Audiobookshelf"]
+    end
+
+    subgraph NAS["Synology NAS — 192.168.1.59"]
+        NFS["NFS export /volume1/backups<br/>archives under linkding/"]
+        Media["Container Manager<br/>qBittorrent + Radarr"]
+    end
+
+    Cloudflare --> Linkding
+    Cloudflare --> Audiobookshelf
+    Backup -->|"validated full-backup ZIP"| NFS
+```
+
+Linkding's application data is stored on a `local-path` `ReadWriteOnce` PVC.
+The backup Pod uses pod affinity to run on the same Kubernetes node as Linkding,
+then writes the resulting archive to the Synology NFS export. Synology media
+automation is a separate Compose workload managed through Container Manager;
+it is not reconciled by Flux.
+
+## Linkding backups
+
+The `linkding-backup` CronJob runs every day at 03:15 in the
+`Europe/Amsterdam` time zone. It uses Linkding's transaction-safe
+`full_backup` command, which includes the SQLite database, bookmark assets,
+favicons, and preview images. The job validates the ZIP locally before copying
+it to:
+
+```text
+/volume1/backups/linkding/linkding-YYYY-MM-DDTHH-MM-SSZ.zip
+```
+
+The final filename only appears after the NFS copy completes. Old backups are
+not deleted by Kubernetes; retention and snapshots should be configured on
+Synology. Every Kubernetes node that can run Linkding must have `nfs-common`
+installed and must be allowed by the Synology NFS rule. See the
+[backup runbook](apps/proxmox/linkding/BACKUP.md) for preparation, manual test,
+and restore instructions.
 
 ## Secrets
 

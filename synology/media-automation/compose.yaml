@@ -1,0 +1,48 @@
+name: media-automation
+
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      PUID: ${PUID:?Set PUID in .env}
+      PGID: ${PGID:?Set PGID in .env}
+      TZ: ${TZ:-Europe/Amsterdam}
+      UMASK: "002"
+      WEBUI_PORT: "8080"
+      TORRENTING_PORT: ${TORRENTING_PORT:-6881}
+    volumes:
+      - ${CONFIG_ROOT:-/volume1/docker/media-automation}/qbittorrent:/config
+      # qBittorrent only needs its input and download directories. Radarr gets
+      # the complete media root below and creates hardlinks itself.
+      - ${MEDIA_ROOT:-/volume1/media}/downloads:/data/downloads
+      - ${MEDIA_ROOT:-/volume1/media}/torrents/watch:/data/torrents/watch
+    ports:
+      - ${WEB_BIND_ADDRESS:-192.168.1.59}:8080:8080
+      - ${TORRENTING_PORT:-6881}:${TORRENTING_PORT:-6881}/tcp
+      - ${TORRENTING_PORT:-6881}:${TORRENTING_PORT:-6881}/udp
+    stop_grace_period: 30s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      PUID: ${PUID:?Set PUID in .env}
+      PGID: ${PGID:?Set PGID in .env}
+      TZ: ${TZ:-Europe/Amsterdam}
+      UMASK: "002"
+    volumes:
+      - ${CONFIG_ROOT:-/volume1/docker/media-automation}/radarr:/config
+      # Downloads and the movie library must be visible through one mount so
+      # that Radarr can create hardlinks instead of physical copies.
+      - ${MEDIA_ROOT:-/volume1/media}:/data
+    ports:
+      - ${WEB_BIND_ADDRESS:-192.168.1.59}:7878:7878
+    depends_on:
+      - qbittorrent
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
