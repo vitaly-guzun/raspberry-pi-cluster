@@ -7,4 +7,4 @@ resources:
   - cloudflare-secret.yaml
 images:
   - name: ghcr.io/advplyr/audiobookshelf
-    newTag: 2.35.1
+    newTag: 2.36.0
