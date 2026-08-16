@@ -34,7 +34,7 @@ spec:
               type: RuntimeDefault
           containers:
             - name: backup
-              image: sissbruecker/linkding:1.45.0
+              image: sissbruecker/linkding:1.46.1
               workingDir: /etc/linkding
               command:
                 - /bin/sh
