@@ -46,3 +46,74 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      PUID: ${PUID:?Set PUID in .env}
+      PGID: ${PGID:?Set PGID in .env}
+      TZ: ${TZ:-Europe/Amsterdam}
+      UMASK: "002"
+    volumes:
+      - ${CONFIG_ROOT:-/volume1/docker/media-automation}/sonarr:/config
+      # Use the same unified mount as Radarr and qBittorrent. This allows
+      # hardlinks from downloads into both /data/shows and /data/kids/shows.
+      - ${MEDIA_ROOT:-/volume1/media}:/data
+    ports:
+      - ${WEB_BIND_ADDRESS:-192.168.1.59}:8989:8989
+    depends_on:
+      - qbittorrent
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      PUID: ${PUID:?Set PUID in .env}
+      PGID: ${PGID:?Set PGID in .env}
+      TZ: ${TZ:-Europe/Amsterdam}
+      UMASK: "002"
+    volumes:
+      - ${CONFIG_ROOT:-/volume1/docker/media-automation}/prowlarr:/config
+    ports:
+      # Administrative UI. Keep it reachable only from the trusted LAN or
+      # through the private Tailscale route, just like Radarr and qBittorrent.
+      - ${WEB_BIND_ADDRESS:-192.168.1.59}:9696:9696
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    container_name: seerr
+    environment:
+      LOG_LEVEL: ${SEERR_LOG_LEVEL:-info}
+      TZ: ${TZ:-Europe/Amsterdam}
+      PORT: "5055"
+    volumes:
+      # The official image runs as UID/GID 1000:1000 and does not support the
+      # LinuxServer PUID/PGID variables. Prepare this directory accordingly;
+      # see README.md before starting the container.
+      - ${CONFIG_ROOT:-/volume1/docker/media-automation}/seerr:/app/config
+    ports:
+      # This is the only end-user UI in this Compose project. Remote users
+      # should reach it through Tailscale (or a separately secured HTTPS proxy).
+      - ${WEB_BIND_ADDRESS:-192.168.1.59}:5055:5055
+    depends_on:
+      - radarr
+      - sonarr
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

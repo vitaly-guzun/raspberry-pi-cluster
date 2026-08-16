@@ -21,8 +21,9 @@ Flux continuously reconciles the desired state from the `main` branch.
   Synology over NFS
 - [Mealie](https://mealie.io/) — recipe manager and meal-planning trial; see the
   [first-week runbook](apps/proxmox/mealie/README.md)
-- [Synology media automation](synology/media-automation/README.md) — qBittorrent
-  and Radarr project for automatic movie imports
+- [Synology media automation](synology/media-automation/README.md) — Seerr,
+  Radarr, Sonarr, Prowlarr, and qBittorrent project for media requests and
+  imports
 
 ## Repository structure
 
@@ -47,7 +48,7 @@ Flux continuously reconciles the desired state from the `main` branch.
 │       ├── base/                   # Monitoring Helm sources and releases
 │       └── proxmox/                # Proxmox monitoring overlay
 ├── synology/
-│   └── media-automation/           # qBittorrent + Radarr Compose project
+│   └── media-automation/           # Automated movie and series requests
 └── renovate.json
 ```
 
@@ -82,7 +83,7 @@ flowchart LR
 
     subgraph NAS["Synology NAS — 192.168.1.59"]
         NFS["NFS export /volume1/backups<br/>archives under linkding/"]
-        Media["Container Manager<br/>qBittorrent + Radarr"]
+        Media["Container Manager<br/>Seerr + Radarr + Sonarr + Prowlarr + qBittorrent"]
     end
 
     Cloudflare --> Linkding
@@ -94,7 +95,8 @@ Linkding's application data is stored on a `local-path` `ReadWriteOnce` PVC.
 The backup Pod uses pod affinity to run on the same Kubernetes node as Linkding,
 then writes the resulting archive to the Synology NFS export. Synology media
 automation is a separate Compose workload managed through Container Manager;
-it is not reconciled by Flux.
+it is not reconciled by Flux. Seerr is its end-user request UI, while Radarr,
+Sonarr, Prowlarr, and qBittorrent remain administrative interfaces.
 
 ## Linkding backups
 
