@@ -19,8 +19,6 @@ Flux continuously reconciles the desired state from the `main` branch.
 - [Linkding](https://linkding.link/) — bookmark manager
 - [Linkding backups](apps/proxmox/linkding/BACKUP.md) — daily full backups to
   Synology over NFS
-- [Mealie](https://mealie.io/) — recipe manager and meal-planning trial; see the
-  [first-week runbook](apps/proxmox/mealie/README.md)
 - [Synology media automation](synology/media-automation/README.md) — Seerr,
   Radarr, Sonarr, Prowlarr, and qBittorrent project for media requests and
   imports
@@ -33,8 +31,7 @@ Flux continuously reconciles the desired state from the `main` branch.
 │   ├── base/                       # Reusable application manifests
 │   └── proxmox/                    # Proxmox application overlays
 │       ├── audiobookshelf/
-│       ├── linkding/               # Linkding overlay and backup CronJob
-│       └── mealie/                 # Initial recipe and meal-planning trial
+│       └── linkding/               # Linkding overlay and backup CronJob
 ├── clusters/
 │   └── proxmox/                    # Flux entry point for the cluster
 ├── infrastructure/
