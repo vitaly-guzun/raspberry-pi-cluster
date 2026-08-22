@@ -36,6 +36,7 @@ spec:
               name: audiobookshelf-metadata
             - mountPath: /audiobooks
               name: audiobookshelf-audiobooks
+              subPath: audiobooks
 
           securityContext:
             allowPrivilegeEscalation: false
@@ -51,4 +52,4 @@ spec:
             claimName: metadata-storage-pvc
         - name: audiobookshelf-audiobooks
           persistentVolumeClaim:
-            claimName: audiobooks-storage-pvc
+            claimName: audiobooks-synology-pvc

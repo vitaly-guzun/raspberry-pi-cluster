@@ -6,6 +6,6 @@ resources:
   - service.yaml
   - configmap.yaml
   - storages/audiobooks-storage.yaml
+  - storages/audiobooks-synology-storage.yaml
   - storages/config-storage.yaml
   - storages/metadata-storage.yaml
- 

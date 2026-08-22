@@ -75,17 +75,19 @@ flowchart LR
     subgraph K3s["Proxmox k3s cluster"]
         Linkding["Linkding"] -->|"application data"| LinkdingPVC["Linkding local-path PVC"]
         Backup["Daily backup CronJob<br/>03:15 Europe/Amsterdam"] -->|"reads"| LinkdingPVC
-        Audiobookshelf["Audiobookshelf"]
+        Audiobookshelf["Audiobookshelf"] -->|"audiobook library over NFS"| AudiobooksNFS["Synology NFS PV"]
     end
 
     subgraph NAS["Synology NAS — 192.168.1.59"]
         NFS["NFS export /volume1/backups<br/>archives under linkding/"]
         Media["Container Manager<br/>Seerr + Radarr + Sonarr + Prowlarr + qBittorrent"]
+        Audiobooks["/volume1/media/audiobooks"]
     end
 
     Cloudflare --> Linkding
     Cloudflare --> Audiobookshelf
     Backup -->|"validated full-backup ZIP"| NFS
+    AudiobooksNFS --> Audiobooks
 ```
 
 Linkding's application data is stored on a `local-path` `ReadWriteOnce` PVC.
@@ -94,6 +96,12 @@ then writes the resulting archive to the Synology NFS export. Synology media
 automation is a separate Compose workload managed through Container Manager;
 it is not reconciled by Flux. Seerr is its end-user request UI, while Radarr,
 Sonarr, Prowlarr, and qBittorrent remain administrative interfaces.
+
+Audiobookshelf keeps its SQLite configuration and metadata on local-path PVCs.
+Only the audiobook library is mounted from Synology at
+`/volume1/media/audiobooks` through a static `Retain` NFS volume. The Synology
+NFS rule for the `media` share must allow the Kubernetes node `192.168.1.225`
+read/write access.
 
 ## Linkding backups
 
