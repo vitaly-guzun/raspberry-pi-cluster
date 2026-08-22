@@ -5,6 +5,7 @@ resources:
   - ../../base/audiobookshelf/
   - cloudflare.yaml
   - cloudflare-secret.yaml
+  - tailscale-ingress.yaml
 images:
   - name: ghcr.io/advplyr/audiobookshelf
     newTag: 2.36.0
