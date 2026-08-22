@@ -6,6 +6,7 @@ Flux continuously reconciles the desired state from the `main` branch.
 ## Stack
 
 - Kubernetes and Flux CD
+- Tailscale Kubernetes Operator for private application access
 - Kustomize and Helm
 - SOPS with Age for encrypted secrets
 - Cloudflare Tunnel for external access
@@ -71,6 +72,7 @@ monitoring.
 ```mermaid
 flowchart LR
     Cloudflare["Cloudflare Tunnel"]
+    Tailscale["Tailscale tailnet"]
 
     subgraph K3s["Proxmox k3s cluster"]
         Linkding["Linkding"] -->|"application data"| LinkdingPVC["Linkding local-path PVC"]
@@ -86,6 +88,7 @@ flowchart LR
 
     Cloudflare --> Linkding
     Cloudflare --> Audiobookshelf
+    Tailscale -->|"private HTTPS and large uploads"| Audiobookshelf
     Backup -->|"validated full-backup ZIP"| NFS
     AudiobooksNFS --> Audiobooks
 ```
@@ -102,6 +105,12 @@ Only the audiobook library is mounted from Synology at
 `/volume1/media/audiobooks` through a static `Retain` NFS volume. The Synology
 NFS rule for the `media` share must allow the Kubernetes node `192.168.1.225`
 read/write access.
+
+Audiobookshelf is also available privately inside the tailnet at
+`https://audiobookshelf.tailccd1e9.ts.net/`. This route is managed by the
+Tailscale Kubernetes Operator and should be used for large uploads that exceed
+Cloudflare's request-body limit. Funnel is not enabled, so the endpoint is not
+publicly reachable.
 
 ## Linkding backups
 
