@@ -125,3 +125,55 @@ missing storage displays `N/A`, and CPU percentages in cards and rankings match
 the table. RAM ranking shows % of VM capacity while the table/cards show bytes. Compare RAM with `kubectl top pods`
 (note that CPU uses different averaging windows). The old dashboard remains
 available. No new exporter, alert, or credentials are introduced in this phase.
+
+## Application availability (phase 2)
+
+Flux deploys `prometheus-blackbox-exporter` as an internal ClusterIP service,
+with no ingress or host port. Nine `Probe` resources use the existing Prometheus
+selector (`release: kube-prometheus-stack`). Each target carries `app`, `host`,
+`runtime`, `url` (the user-facing root URL), and `route` labels.
+
+Probes run every 30 seconds with a 10-second HTTP timeout and 15-second scrape
+timeout. HTTPS probes validate certificates and require HTTPS. They use the
+normal Pod DNS/Tailscale route, not a DNS override to an internal service.
+Prowlarr is deliberately checked over LAN HTTP at `192.168.1.59:9696/ping`.
+
+| App | Probe path |
+| --- | --- |
+| Audiobookshelf, Navidrome, Radarr, Sonarr | `/ping` |
+| Jellyfin, Linkding | `/health` |
+| Seerr | `/api/v1/status` |
+| qBittorrent | `/` |
+| Prowlarr (LAN HTTP) | `/ping` |
+
+The availability table shows all nine apps, host, route, clickable URL, probe
+duration and last success. `Available` means the endpoint returned HTTP 200;
+it does not verify login or playback. `Unavailable` means the exporter was
+scraped successfully but the endpoint check failed. `No data` means probe
+telemetry is missing or cannot be scraped. Kubernetes Deployment readiness
+remains separate in the k3s resource table.
+
+The recording rule `homelab_application_last_success_timestamp_seconds` retains
+the last successful observation through failed checks and exporter outages,
+starting with the first successful probe after deployment. When a target is
+removed its retained value expires once its scrape series becomes stale.
+The timestamp uses the configured browser timezone in Grafana.
+
+Verify after committing/pushing and Flux reconciliation:
+
+```bash
+flux reconcile source git flux-system -n flux-system
+flux reconcile kustomization monitoring-controllers -n flux-system
+flux reconcile kustomization monitoring-configs -n flux-system
+kubectl -n monitoring get helmrelease prometheus-blackbox-exporter
+kubectl -n monitoring get probes
+```
+
+Check `probe_success{job="homelab-applications"}` and
+`up{job="homelab-applications"}` in Prometheus. A temporary probe to an unused
+loopback port of the exporter can verify `probe_success=0` without stopping any
+application; restore a working target and check automatic recovery. Never leave
+this temporary test target in Git. Verify the dashboard remains unchanged after
+another Flux reconciliation. Remove the HelmRelease, probes and recording rule
+from their kustomizations to roll back the exporter; restore the prior dashboard
+JSON in Git to roll back its availability panels.

@@ -1,0 +1,233 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-audiobookshelf
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://audiobooks.vitalyguzun.com/ping
+      labels:
+        app: "audiobookshelf"
+        host: "mini-pc"
+        runtime: "k3s"
+        url: "https://audiobooks.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-navidrome
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://navidrome.vitalyguzun.com/ping
+      labels:
+        app: "navidrome"
+        host: "mini-pc"
+        runtime: "k3s"
+        url: "https://navidrome.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-linkding
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://linkding.vitalyguzun.com/health
+      labels:
+        app: "linkding"
+        host: "mini-pc"
+        runtime: "k3s"
+        url: "https://linkding.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-jellyfin
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://jellyfin.vitalyguzun.com/health
+      labels:
+        app: "jellyfin"
+        host: "mini-pc"
+        runtime: "lxc"
+        url: "https://jellyfin.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-radarr
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://radarr.vitalyguzun.com/ping
+      labels:
+        app: "radarr"
+        host: "synology"
+        runtime: "docker"
+        url: "https://radarr.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-sonarr
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://sonarr.vitalyguzun.com/ping
+      labels:
+        app: "sonarr"
+        host: "synology"
+        runtime: "docker"
+        url: "https://sonarr.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-seerr
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://seerr.vitalyguzun.com/api/v1/status
+      labels:
+        app: "seerr"
+        host: "synology"
+        runtime: "docker"
+        url: "https://seerr.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-qbittorrent
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: https_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - https://torrent.vitalyguzun.com/
+      labels:
+        app: "qbittorrent"
+        host: "synology"
+        runtime: "docker"
+        url: "https://torrent.vitalyguzun.com"
+        route: "HTTPS"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-prowlarr
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: homelab-applications
+  interval: 30s
+  scrapeTimeout: 15s
+  module: http_lan_application
+  prober:
+    url: prometheus-blackbox-exporter.monitoring.svc.cluster.local:9115
+    path: /probe
+  targets:
+    staticConfig:
+      static:
+        - http://192.168.1.59:9696/ping
+      labels:
+        app: "prowlarr"
+        host: "synology"
+        runtime: "docker"
+        url: "http://192.168.1.59:9696"
+        route: "LAN HTTP"

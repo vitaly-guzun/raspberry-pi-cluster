@@ -11,7 +11,7 @@ data:
       "uid": "homelab-applications",
       "title": "Homelab Applications",
       "id": null,
-      "version": 2,
+      "version": 3,
       "schemaVersion": 39,
       "editable": true,
       "tags": [
@@ -32,12 +32,187 @@ data:
       },
       "panels": [
         {
+          "id": 100,
+          "title": "Applications \u00b7 Availability",
+          "type": "table",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 24,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "HTTPS checks run from Kubernetes through the configured DNS/Tailscale route with certificate validation. Prowlarr is LAN HTTP. Available means a successful HTTP endpoint check, not a full sign-in/playback test. No data means exporter telemetry is missing. Last success is retained from the first successful check after this phase is deployed.",
+          "fieldConfig": {
+            "defaults": {
+              "noValue": "N/A"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Availability"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "type": "value",
+                        "options": {
+                          "0": {
+                            "text": "Unavailable",
+                            "color": "red"
+                          },
+                          "1": {
+                            "text": "Available",
+                            "color": "green"
+                          },
+                          "2": {
+                            "text": "No data",
+                            "color": "gray"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "URL"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "Open application",
+                        "url": "${__value.raw}",
+                        "targetBlank": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Response time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Last success"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "(max by (app,host,runtime,url,route) (probe_success{job=\"homelab-applications\"}) and on (app,host,runtime,url,route) (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 1)) or (2 + 0 * (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 0)) or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"audiobookshelf\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://audiobooks.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"navidrome\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://navidrome.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"linkding\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://linkding.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"jellyfin\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"lxc\", \"\", \"\"), \"url\", \"https://jellyfin.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"radarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://radarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"sonarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://sonarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"seerr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://seerr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"qbittorrent\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://torrent.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"prowlarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"http://192.168.1.59:9696\", \"\", \"\"), \"route\", \"LAN HTTP\", \"\", \"\")",
+              "instant": true,
+              "range": false,
+              "format": "table"
+            },
+            {
+              "refId": "B",
+              "expr": "max by (app,host,runtime,url,route) (probe_duration_seconds{job=\"homelab-applications\"}) and on (app,host,runtime,url,route) (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 1)",
+              "instant": true,
+              "range": false,
+              "format": "table"
+            },
+            {
+              "refId": "C",
+              "expr": "max by (app,host,runtime,url,route) (homelab_application_last_success_timestamp_seconds) * 1000",
+              "instant": true,
+              "range": false,
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "runtime": true
+                },
+                "renameByName": {
+                  "app": "Application",
+                  "host": "Host",
+                  "route": "Route",
+                  "url": "URL",
+                  "Value #A": "Availability",
+                  "Value #B": "Response time",
+                  "Value #C": "Last success"
+                },
+                "indexByName": {
+                  "app": 0,
+                  "host": 1,
+                  "route": 2,
+                  "Value #A": 3,
+                  "url": 4,
+                  "Value #B": 5,
+                  "Value #C": 6
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "sort": [
+                  {
+                    "field": "Application"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
           "id": 1,
           "title": "k3s VM \u00b7 CPU",
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 0,
+            "y": 8,
             "w": 4,
             "h": 3
           },
@@ -86,7 +261,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 4,
-            "y": 0,
+            "y": 8,
             "w": 4,
             "h": 3
           },
@@ -135,7 +310,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 8,
-            "y": 0,
+            "y": 8,
             "w": 4,
             "h": 3
           },
@@ -184,7 +359,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 0,
+            "y": 8,
             "w": 4,
             "h": 3
           },
@@ -233,7 +408,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 16,
-            "y": 0,
+            "y": 8,
             "w": 4,
             "h": 3
           },
@@ -309,7 +484,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 20,
-            "y": 0,
+            "y": 8,
             "w": 4,
             "h": 3
           },
@@ -385,7 +560,7 @@ data:
           "type": "bargauge",
           "gridPos": {
             "x": 0,
-            "y": 3,
+            "y": 11,
             "w": 12,
             "h": 5
           },
@@ -442,7 +617,7 @@ data:
           "type": "bargauge",
           "gridPos": {
             "x": 12,
-            "y": 3,
+            "y": 11,
             "w": 12,
             "h": 5
           },
@@ -499,7 +674,7 @@ data:
           "type": "table",
           "gridPos": {
             "x": 0,
-            "y": 8,
+            "y": 16,
             "w": 24,
             "h": 5
           },
@@ -620,24 +795,6 @@ data:
                             "color": "green"
                           }
                         }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Application"
-                },
-                "properties": [
-                  {
-                    "id": "links",
-                    "value": [
-                      {
-                        "title": "Open application",
-                        "url": "https://${__value.raw}.vitalyguzun.com",
-                        "targetBlank": true
                       }
                     ]
                   }
@@ -791,7 +948,7 @@ data:
           "collapsed": false,
           "gridPos": {
             "x": 0,
-            "y": 13,
+            "y": 21,
             "w": 24,
             "h": 1
           },
@@ -799,11 +956,11 @@ data:
         },
         {
           "id": 11,
-          "title": "Kubernetes state",
+          "title": "Availability",
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 14,
+            "y": 22,
             "w": 6,
             "h": 4
           },
@@ -811,7 +968,7 @@ data:
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "description": "",
+          "description": "HTTP endpoint check; No data is distinct from an unsuccessful probe.",
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -822,24 +979,19 @@ data:
               },
               "mappings": [
                 {
-                  "type": "range",
+                  "type": "value",
                   "options": {
-                    "from": 0,
-                    "to": 0.999999,
-                    "result": {
-                      "text": "Not ready",
-                      "color": "orange"
-                    }
-                  }
-                },
-                {
-                  "type": "range",
-                  "options": {
-                    "from": 1,
-                    "to": 100,
-                    "result": {
-                      "text": "Ready",
+                    "0": {
+                      "text": "Unavailable",
+                      "color": "red"
+                    },
+                    "1": {
+                      "text": "Available",
                       "color": "green"
+                    },
+                    "2": {
+                      "text": "No data",
+                      "color": "gray"
                     }
                   }
                 }
@@ -849,7 +1001,7 @@ data:
           },
           "targets": [
             {
-              "expr": "(label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "expr": "((max by (app,host,runtime,url,route) (probe_success{job=\"homelab-applications\"}) and on (app,host,runtime,url,route) (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 1)) or (2 + 0 * (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 0)) or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"audiobookshelf\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://audiobooks.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"navidrome\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://navidrome.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"linkding\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://linkding.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"jellyfin\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"lxc\", \"\", \"\"), \"url\", \"https://jellyfin.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"radarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://radarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"sonarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://sonarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"seerr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://seerr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"qbittorrent\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://torrent.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"prowlarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"http://192.168.1.59:9696\", \"\", \"\"), \"route\", \"LAN HTTP\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
               "refId": "A",
               "instant": true,
               "range": false,
@@ -872,7 +1024,7 @@ data:
           "links": [
             {
               "title": "Open Audiobookshelf",
-              "url": "https://audiobookshelf.vitalyguzun.com",
+              "url": "https://audiobooks.vitalyguzun.com",
               "targetBlank": true
             }
           ]
@@ -883,7 +1035,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 6,
-            "y": 14,
+            "y": 22,
             "w": 6,
             "h": 4
           },
@@ -929,7 +1081,7 @@ data:
           "links": [
             {
               "title": "Open Audiobookshelf",
-              "url": "https://audiobookshelf.vitalyguzun.com",
+              "url": "https://audiobooks.vitalyguzun.com",
               "targetBlank": true
             }
           ]
@@ -940,7 +1092,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 14,
+            "y": 22,
             "w": 6,
             "h": 4
           },
@@ -985,7 +1137,7 @@ data:
           "links": [
             {
               "title": "Open Audiobookshelf",
-              "url": "https://audiobookshelf.vitalyguzun.com",
+              "url": "https://audiobooks.vitalyguzun.com",
               "targetBlank": true
             }
           ]
@@ -996,7 +1148,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 18,
-            "y": 14,
+            "y": 22,
             "w": 6,
             "h": 4
           },
@@ -1041,7 +1193,7 @@ data:
           "links": [
             {
               "title": "Open Audiobookshelf",
-              "url": "https://audiobookshelf.vitalyguzun.com",
+              "url": "https://audiobooks.vitalyguzun.com",
               "targetBlank": true
             }
           ]
@@ -1052,7 +1204,7 @@ data:
           "type": "timeseries",
           "gridPos": {
             "x": 0,
-            "y": 18,
+            "y": 26,
             "w": 24,
             "h": 4
           },
@@ -1107,7 +1259,7 @@ data:
           "collapsed": false,
           "gridPos": {
             "x": 0,
-            "y": 22,
+            "y": 30,
             "w": 24,
             "h": 1
           },
@@ -1115,11 +1267,11 @@ data:
         },
         {
           "id": 17,
-          "title": "Kubernetes state",
+          "title": "Availability",
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 23,
+            "y": 31,
             "w": 6,
             "h": 4
           },
@@ -1127,7 +1279,7 @@ data:
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "description": "",
+          "description": "HTTP endpoint check; No data is distinct from an unsuccessful probe.",
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -1138,24 +1290,19 @@ data:
               },
               "mappings": [
                 {
-                  "type": "range",
+                  "type": "value",
                   "options": {
-                    "from": 0,
-                    "to": 0.999999,
-                    "result": {
-                      "text": "Not ready",
-                      "color": "orange"
-                    }
-                  }
-                },
-                {
-                  "type": "range",
-                  "options": {
-                    "from": 1,
-                    "to": 100,
-                    "result": {
-                      "text": "Ready",
+                    "0": {
+                      "text": "Unavailable",
+                      "color": "red"
+                    },
+                    "1": {
+                      "text": "Available",
                       "color": "green"
+                    },
+                    "2": {
+                      "text": "No data",
+                      "color": "gray"
                     }
                   }
                 }
@@ -1165,7 +1312,7 @@ data:
           },
           "targets": [
             {
-              "expr": "(label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "expr": "((max by (app,host,runtime,url,route) (probe_success{job=\"homelab-applications\"}) and on (app,host,runtime,url,route) (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 1)) or (2 + 0 * (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 0)) or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"audiobookshelf\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://audiobooks.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"navidrome\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://navidrome.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"linkding\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://linkding.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"jellyfin\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"lxc\", \"\", \"\"), \"url\", \"https://jellyfin.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"radarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://radarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"sonarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://sonarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"seerr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://seerr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"qbittorrent\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://torrent.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"prowlarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"http://192.168.1.59:9696\", \"\", \"\"), \"route\", \"LAN HTTP\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
               "refId": "A",
               "instant": true,
               "range": false,
@@ -1199,7 +1346,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 6,
-            "y": 23,
+            "y": 31,
             "w": 6,
             "h": 4
           },
@@ -1256,7 +1403,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 23,
+            "y": 31,
             "w": 6,
             "h": 4
           },
@@ -1312,7 +1459,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 18,
-            "y": 23,
+            "y": 31,
             "w": 6,
             "h": 4
           },
@@ -1368,7 +1515,7 @@ data:
           "type": "timeseries",
           "gridPos": {
             "x": 0,
-            "y": 27,
+            "y": 35,
             "w": 24,
             "h": 4
           },
@@ -1423,7 +1570,7 @@ data:
           "collapsed": false,
           "gridPos": {
             "x": 0,
-            "y": 31,
+            "y": 39,
             "w": 24,
             "h": 1
           },
@@ -1431,11 +1578,11 @@ data:
         },
         {
           "id": 23,
-          "title": "Kubernetes state",
+          "title": "Availability",
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 32,
+            "y": 40,
             "w": 6,
             "h": 4
           },
@@ -1443,7 +1590,7 @@ data:
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "description": "",
+          "description": "HTTP endpoint check; No data is distinct from an unsuccessful probe.",
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -1454,24 +1601,19 @@ data:
               },
               "mappings": [
                 {
-                  "type": "range",
+                  "type": "value",
                   "options": {
-                    "from": 0,
-                    "to": 0.999999,
-                    "result": {
-                      "text": "Not ready",
-                      "color": "orange"
-                    }
-                  }
-                },
-                {
-                  "type": "range",
-                  "options": {
-                    "from": 1,
-                    "to": 100,
-                    "result": {
-                      "text": "Ready",
+                    "0": {
+                      "text": "Unavailable",
+                      "color": "red"
+                    },
+                    "1": {
+                      "text": "Available",
                       "color": "green"
+                    },
+                    "2": {
+                      "text": "No data",
+                      "color": "gray"
                     }
                   }
                 }
@@ -1481,7 +1623,7 @@ data:
           },
           "targets": [
             {
-              "expr": "(label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "expr": "((max by (app,host,runtime,url,route) (probe_success{job=\"homelab-applications\"}) and on (app,host,runtime,url,route) (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 1)) or (2 + 0 * (max by (app,host,runtime,url,route) (up{job=\"homelab-applications\"}) == 0)) or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"audiobookshelf\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://audiobooks.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"navidrome\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://navidrome.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"linkding\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"url\", \"https://linkding.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"jellyfin\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"lxc\", \"\", \"\"), \"url\", \"https://jellyfin.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"radarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://radarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"sonarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://sonarr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"seerr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://seerr.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"qbittorrent\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"https://torrent.vitalyguzun.com\", \"\", \"\"), \"route\", \"HTTPS\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(label_replace(vector(2), \"app\", \"prowlarr\", \"\", \"\"), \"host\", \"synology\", \"\", \"\"), \"runtime\", \"docker\", \"\", \"\"), \"url\", \"http://192.168.1.59:9696\", \"\", \"\"), \"route\", \"LAN HTTP\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
               "refId": "A",
               "instant": true,
               "range": false,
@@ -1515,7 +1657,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 6,
-            "y": 32,
+            "y": 40,
             "w": 6,
             "h": 4
           },
@@ -1572,7 +1714,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 32,
+            "y": 40,
             "w": 6,
             "h": 4
           },
@@ -1628,7 +1770,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 18,
-            "y": 32,
+            "y": 40,
             "w": 6,
             "h": 4
           },
@@ -1684,7 +1826,7 @@ data:
           "type": "timeseries",
           "gridPos": {
             "x": 0,
-            "y": 36,
+            "y": 44,
             "w": 24,
             "h": 4
           },
@@ -1738,7 +1880,7 @@ data:
           "type": "text",
           "gridPos": {
             "x": 0,
-            "y": 40,
+            "y": 48,
             "w": 24,
             "h": 3
           },
@@ -1761,7 +1903,7 @@ data:
           "targets": [],
           "options": {
             "mode": "markdown",
-            "content": "CPU/RAM shares use the **k3s VM** capacity. Kubernetes readiness is shown until HTTPS checks are added. **App/config** excludes media; Navidrome storage is unavailable until a reliable directory measurement exists. Jellyfin and Synology application resources, media sizes and user listening/viewing hours follow in later phases."
+            "content": "CPU/RAM shares use the **k3s VM** capacity. App/config excludes media; Navidrome storage awaits a reliable directory measurement. Availability checks HTTPS endpoints (Prowlarr: LAN HTTP). Jellyfin and Synology application resources, media sizes and user listening/viewing hours follow in later phases."
           }
         }
       ]

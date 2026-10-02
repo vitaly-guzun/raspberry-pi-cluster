@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: homelab-application-probes
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: homelab.application-probes
+      interval: 30s
+      rules:
+        # Retain the last successful observation through failures/exporter outages.
+        # Filter retained values against current probe targets so removed apps expire.
+        - record: homelab_application_last_success_timestamp_seconds
+          expr: >-
+            max by (app,host,runtime,url,route) (timestamp(probe_success{job="homelab-applications"} == 1))
+            or on (app,host,runtime,url,route)
+            (homelab_application_last_success_timestamp_seconds
+            and on (app,host,runtime,url,route) max by (app,host,runtime,url,route) (up{job="homelab-applications"}))

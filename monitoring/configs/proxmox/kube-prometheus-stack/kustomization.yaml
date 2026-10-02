@@ -5,3 +5,5 @@ resources:
   - homelab-baseline-rules.yaml
   - homelab-overview-dashboard.yaml
   - homelab-applications-dashboard.yaml
+  - homelab-application-probes.yaml
+  - homelab-application-probe-rules.yaml
