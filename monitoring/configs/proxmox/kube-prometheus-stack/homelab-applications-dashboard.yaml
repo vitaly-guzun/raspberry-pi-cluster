@@ -39,7 +39,7 @@ data:
             "x": 0,
             "y": 0,
             "w": 24,
-            "h": 8
+            "h": 10
           },
           "datasource": {
             "type": "prometheus",
@@ -84,6 +84,10 @@ data:
                     "value": {
                       "type": "color-text"
                     }
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 120
                   }
                 ]
               },
@@ -102,6 +106,10 @@ data:
                         "targetBlank": true
                       }
                     ]
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 340
                   }
                 ]
               },
@@ -118,6 +126,10 @@ data:
                   {
                     "id": "decimals",
                     "value": 3
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 140
                   }
                 ]
               },
@@ -130,6 +142,46 @@ data:
                   {
                     "id": "unit",
                     "value": "dateTimeAsIso"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 230
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Application"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Host"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Route"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 100
                   }
                 ]
               }
@@ -212,7 +264,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 8,
+            "y": 10,
             "w": 4,
             "h": 3
           },
@@ -261,7 +313,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 4,
-            "y": 8,
+            "y": 10,
             "w": 4,
             "h": 3
           },
@@ -310,7 +362,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 8,
-            "y": 8,
+            "y": 10,
             "w": 4,
             "h": 3
           },
@@ -359,7 +411,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 8,
+            "y": 10,
             "w": 4,
             "h": 3
           },
@@ -408,7 +460,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 16,
-            "y": 8,
+            "y": 10,
             "w": 4,
             "h": 3
           },
@@ -484,7 +536,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 20,
-            "y": 8,
+            "y": 10,
             "w": 4,
             "h": 3
           },
@@ -560,7 +612,7 @@ data:
           "type": "bargauge",
           "gridPos": {
             "x": 0,
-            "y": 11,
+            "y": 13,
             "w": 12,
             "h": 5
           },
@@ -617,7 +669,7 @@ data:
           "type": "bargauge",
           "gridPos": {
             "x": 12,
-            "y": 11,
+            "y": 13,
             "w": 12,
             "h": 5
           },
@@ -674,7 +726,7 @@ data:
           "type": "table",
           "gridPos": {
             "x": 0,
-            "y": 16,
+            "y": 18,
             "w": 24,
             "h": 5
           },
@@ -948,7 +1000,7 @@ data:
           "collapsed": false,
           "gridPos": {
             "x": 0,
-            "y": 21,
+            "y": 23,
             "w": 24,
             "h": 1
           },
@@ -960,7 +1012,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 22,
+            "y": 24,
             "w": 6,
             "h": 4
           },
@@ -1035,7 +1087,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 6,
-            "y": 22,
+            "y": 24,
             "w": 6,
             "h": 4
           },
@@ -1092,7 +1144,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 22,
+            "y": 24,
             "w": 6,
             "h": 4
           },
@@ -1148,7 +1200,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 18,
-            "y": 22,
+            "y": 24,
             "w": 6,
             "h": 4
           },
@@ -1204,7 +1256,7 @@ data:
           "type": "timeseries",
           "gridPos": {
             "x": 0,
-            "y": 26,
+            "y": 28,
             "w": 24,
             "h": 4
           },
@@ -1259,7 +1311,7 @@ data:
           "collapsed": false,
           "gridPos": {
             "x": 0,
-            "y": 30,
+            "y": 32,
             "w": 24,
             "h": 1
           },
@@ -1271,7 +1323,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 31,
+            "y": 33,
             "w": 6,
             "h": 4
           },
@@ -1346,7 +1398,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 6,
-            "y": 31,
+            "y": 33,
             "w": 6,
             "h": 4
           },
@@ -1403,7 +1455,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 31,
+            "y": 33,
             "w": 6,
             "h": 4
           },
@@ -1459,7 +1511,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 18,
-            "y": 31,
+            "y": 33,
             "w": 6,
             "h": 4
           },
@@ -1515,7 +1567,7 @@ data:
           "type": "timeseries",
           "gridPos": {
             "x": 0,
-            "y": 35,
+            "y": 37,
             "w": 24,
             "h": 4
           },
@@ -1570,7 +1622,7 @@ data:
           "collapsed": false,
           "gridPos": {
             "x": 0,
-            "y": 39,
+            "y": 41,
             "w": 24,
             "h": 1
           },
@@ -1582,7 +1634,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 0,
-            "y": 40,
+            "y": 42,
             "w": 6,
             "h": 4
           },
@@ -1657,7 +1709,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 6,
-            "y": 40,
+            "y": 42,
             "w": 6,
             "h": 4
           },
@@ -1714,7 +1766,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 12,
-            "y": 40,
+            "y": 42,
             "w": 6,
             "h": 4
           },
@@ -1770,7 +1822,7 @@ data:
           "type": "stat",
           "gridPos": {
             "x": 18,
-            "y": 40,
+            "y": 42,
             "w": 6,
             "h": 4
           },
@@ -1826,7 +1878,7 @@ data:
           "type": "timeseries",
           "gridPos": {
             "x": 0,
-            "y": 44,
+            "y": 46,
             "w": 24,
             "h": 4
           },
@@ -1880,7 +1932,7 @@ data:
           "type": "text",
           "gridPos": {
             "x": 0,
-            "y": 48,
+            "y": 50,
             "w": 24,
             "h": 3
           },
