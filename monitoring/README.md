@@ -85,3 +85,43 @@ kubectl get --raw \
 The dashboard uses conservative warning thresholds: 50°C for the Synology
 system, 45°C for disks, and 70°C for the mini-PC CPU. Alerts fire at 50°C for a
 Synology disk or system sensor and at 85°C for the mini-PC CPU.
+
+## Homelab Applications (phase 1)
+
+`Homelab Applications` is provisioned alongside `Homelab Overview` by the same
+Grafana sidecar. Its stable UID is `homelab-applications`.
+
+Phase 1 focuses on Audiobookshelf, Navidrome and Linkding. The top strip
+shows k3s VM CPU/RAM and compact Synology temperature and health indicators.
+CPU and RAM rankings use a fixed 0–100% scale of the single k3s VM capacity
+(`kube_node_status_capacity`); they do not represent the physical Proxmox host.
+The compact table includes readiness, current/1h CPU share, RAM in bytes and % of VM capacity, config storage
+and restarts. Each app has its own section with readiness, CPU, RAM, config
+storage, links to its UI and CPU/RAM history. External applications and user
+analytics will be added when their metrics become available.
+
+- Kubernetes readiness is available/desired Deployment replicas, not HTTP availability.
+- CPU now is a 5-minute average; CPU average 1h uses a 1-hour rate.
+- RAM is the working set. CPU/RAM and restarts include the main application
+  container only, excluding Linkding backups and cloudflared.
+- App/config storage includes Audiobookshelf config + metadata, Navidrome data,
+  and Linkding data PVCs. Media PVCs are excluded. These are kubelet-reported
+  values, not independently measured directory sizes. Navidrome currently reports
+  shared filesystem usage exceeding its requested PVC size; the query rejects
+  that value and displays `N/A`. Accurate directory sizes need a later collector.
+- Synology health summarizes existing fan/thermal and disk statuses. Non-normal
+  status codes are labeled `Check DSM`; missing telemetry stays `N/A`.
+
+Validate before rollout:
+
+```bash
+kubectl kustomize monitoring/configs/proxmox > /tmp/monitoring-configs.yaml
+kubectl apply --dry-run=server -f monitoring/configs/proxmox/kube-prometheus-stack/homelab-applications-dashboard.yaml
+```
+
+After committing and pushing the change for Flux reconciliation, open
+`/d/homelab-applications` in Grafana. Check that the table has three application rows, readiness reads `Ready`,
+missing storage displays `N/A`, and CPU percentages in cards and rankings match
+the table. RAM ranking shows % of VM capacity while the table/cards show bytes. Compare RAM with `kubectl top pods`
+(note that CPU uses different averaging windows). The old dashboard remains
+available. No new exporter, alert, or credentials are introduced in this phase.

@@ -4,3 +4,4 @@ resources:
   - grafana-tls-secret.yaml
   - homelab-baseline-rules.yaml
   - homelab-overview-dashboard.yaml
+  - homelab-applications-dashboard.yaml

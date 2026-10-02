@@ -1,0 +1,1768 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homelab-applications-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  homelab-applications.json: |-
+    {
+      "uid": "homelab-applications",
+      "title": "Homelab Applications",
+      "id": null,
+      "version": 2,
+      "schemaVersion": 39,
+      "editable": true,
+      "tags": [
+        "homelab",
+        "applications"
+      ],
+      "timezone": "browser",
+      "refresh": "30s",
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "templating": {
+        "list": []
+      },
+      "annotations": {
+        "list": []
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "k3s VM \u00b7 CPU",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "k3s VM \u00b7 RAM",
+          "type": "stat",
+          "gridPos": {
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "100 * (1 - node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"})",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "id": 3,
+          "title": "Synology \u00b7 System",
+          "type": "stat",
+          "gridPos": {
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "max(synology_system_temperature_celsius)",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "id": 4,
+          "title": "Synology \u00b7 Hottest disk",
+          "type": "stat",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 4,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "max(synology_disk_temperature_celsius)",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "id": 5,
+          "title": "Synology \u00b7 Fans / thermal",
+          "type": "stat",
+          "gridPos": {
+            "x": 16,
+            "y": 0,
+            "w": 4,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "1": {
+                      "text": "Normal",
+                      "color": "green"
+                    },
+                    "2": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    },
+                    "3": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    },
+                    "4": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    },
+                    "5": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "max({__name__=~\"synology_(thermal|system_fan|cpu_fan)_status\"})",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "id": 6,
+          "title": "Synology \u00b7 Disks",
+          "type": "stat",
+          "gridPos": {
+            "x": 20,
+            "y": 0,
+            "w": 4,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "1": {
+                      "text": "Normal",
+                      "color": "green"
+                    },
+                    "2": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    },
+                    "3": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    },
+                    "4": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    },
+                    "5": {
+                      "text": "Check DSM",
+                      "color": "orange"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "max(synology_disk_status)",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "id": 7,
+          "title": "Applications \u00b7 CPU share of k3s VM",
+          "type": "bargauge",
+          "gridPos": {
+            "x": 0,
+            "y": 3,
+            "w": 12,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Share of the single k3s VM capacity, not physical Proxmox capacity. Main application containers only. Fixed 0\u2013100% scale; small bars are expected at idle.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "min": 0,
+              "max": 100,
+              "decimals": 3
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "sort_desc(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"})))",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "orientation": "horizontal",
+            "displayMode": "basic",
+            "showUnfilled": true,
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {
+              "valueSize": 20,
+              "titleSize": 16
+            },
+            "namePlacement": "top"
+          }
+        },
+        {
+          "id": 8,
+          "title": "Applications \u00b7 RAM share of k3s VM",
+          "type": "bargauge",
+          "gridPos": {
+            "x": 12,
+            "y": 3,
+            "w": 12,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Share of the single k3s VM capacity, not physical Proxmox capacity. Main application containers only. Fixed 0\u2013100% scale; small bars are expected at idle.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "min": 0,
+              "max": 100,
+              "decimals": 3
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "sort_desc(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"memory\",unit=\"byte\"})))",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "orientation": "horizontal",
+            "displayMode": "basic",
+            "showUnfilled": true,
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {
+              "valueSize": 20,
+              "titleSize": 16
+            },
+            "namePlacement": "top"
+          }
+        },
+        {
+          "id": 9,
+          "title": "Applications \u00b7 k3s",
+          "type": "table",
+          "gridPos": {
+            "x": 0,
+            "y": 8,
+            "w": 24,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Ready = Deployment available/desired replicas, not an HTTP probe. CPU uses 5m / 1h averages as % of VM CPU capacity. Storage is config PVC usage; media excluded. Navidrome storage N/A: kubelet reports shared filesystem usage above PVC size. RAM % VM is the application working set divided by the single k3s VM memory capacity.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPU now"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPU 1h"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "RAM"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "bytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "App/config"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "bytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Restarts 24h"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "State"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "type": "range",
+                        "options": {
+                          "from": 0,
+                          "to": 0.999999,
+                          "result": {
+                            "text": "Not ready",
+                            "color": "orange"
+                          }
+                        }
+                      },
+                      {
+                        "type": "range",
+                        "options": {
+                          "from": 1,
+                          "to": 100,
+                          "result": {
+                            "text": "Ready",
+                            "color": "green"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Application"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "Open application",
+                        "url": "https://${__value.raw}.vitalyguzun.com",
+                        "targetBlank": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "RAM % VM"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 2
+                  }
+                ]
+              }
+            ]
+          },
+          "targets": [
+            {
+              "expr": "label_replace(label_replace(label_replace(label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"namespace\", \"audiobookshelf\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"namespace\", \"navidrome\", \"\", \"\") or label_replace(label_replace(label_replace(label_replace(vector(1), \"app\", \"linkding\", \"\", \"\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\"), \"namespace\", \"linkding\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")",
+              "refId": "B",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))",
+              "refId": "C",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[1h])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))",
+              "refId": "D",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")",
+              "refId": "E",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=\"audiobookshelf\",persistentvolumeclaim=~\"config-storage-pvc|metadata-storage-pvc\"} or (kubelet_volume_stats_used_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"} <= on (namespace,persistentvolumeclaim) group_left max by (namespace,persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"})) or kubelet_volume_stats_used_bytes{namespace=\"linkding\",persistentvolumeclaim=\"linkding-storage-pvc-v1\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")",
+              "refId": "F",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (increase(kube_pod_container_status_restarts_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[24h])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")",
+              "refId": "G",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            },
+            {
+              "expr": "100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"memory\",unit=\"byte\"}))",
+              "refId": "H",
+              "instant": true,
+              "range": false,
+              "format": "table",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false
+            }
+          },
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "namespace": true,
+                  "runtime": true,
+                  "Value #A": true
+                },
+                "renameByName": {
+                  "app": "Application",
+                  "host": "Host",
+                  "Value #B": "State",
+                  "Value #C": "CPU now",
+                  "Value #D": "CPU 1h",
+                  "Value #E": "RAM",
+                  "Value #F": "App/config",
+                  "Value #G": "Restarts 24h",
+                  "Value #H": "RAM % VM"
+                },
+                "indexByName": {
+                  "app": 0,
+                  "host": 1,
+                  "Value #B": 2,
+                  "Value #C": 3,
+                  "Value #D": 4,
+                  "Value #E": 5,
+                  "Value #F": 7,
+                  "Value #G": 8,
+                  "Value #H": 6
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "sort": [
+                  {
+                    "field": "Application"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": "row",
+          "title": "Audiobookshelf \u00b7 mini-PC / k3s",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 13,
+            "w": 24,
+            "h": 1
+          },
+          "panels": []
+        },
+        {
+          "id": 11,
+          "title": "Kubernetes state",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 14,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "mappings": [
+                {
+                  "type": "range",
+                  "options": {
+                    "from": 0,
+                    "to": 0.999999,
+                    "result": {
+                      "text": "Not ready",
+                      "color": "orange"
+                    }
+                  }
+                },
+                {
+                  "type": "range",
+                  "options": {
+                    "from": 1,
+                    "to": 100,
+                    "result": {
+                      "text": "Ready",
+                      "color": "green"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Audiobookshelf",
+              "url": "https://audiobookshelf.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "title": "CPU \u00b7 % of VM",
+          "type": "stat",
+          "gridPos": {
+            "x": 6,
+            "y": 14,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "5-minute average as share of k3s VM CPU capacity.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "decimals": 3
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Audiobookshelf",
+              "url": "https://audiobookshelf.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "title": "RAM",
+          "type": "stat",
+          "gridPos": {
+            "x": 12,
+            "y": 14,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Application working set; excludes sidecars and backup jobs.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Audiobookshelf",
+              "url": "https://audiobookshelf.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "title": "App/config storage",
+          "type": "stat",
+          "gridPos": {
+            "x": 18,
+            "y": 14,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Kubernetes state is available/desired replicas, not an HTTP check. CPU now is a 5m average in CPU cores; 1h uses the full previous hour. N/A means no metric, not zero. App/config excludes media PVCs. External applications are inventory only in phase 1. Storage is kubelet-reported config PVC usage, not a directory-size measurement. Navidrome reports shared filesystem usage above its requested PVC size; that invalid footprint is hidden as N/A pending a directory collector.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=\"audiobookshelf\",persistentvolumeclaim=~\"config-storage-pvc|metadata-storage-pvc\"} or (kubelet_volume_stats_used_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"} <= on (namespace,persistentvolumeclaim) group_left max by (namespace,persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"})) or kubelet_volume_stats_used_bytes{namespace=\"linkding\",persistentvolumeclaim=\"linkding-storage-pvc-v1\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Audiobookshelf",
+              "url": "https://audiobookshelf.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "title": "CPU / RAM \u00b7 % of k3s VM",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 18,
+            "w": 24,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "refId": "A",
+              "instant": false,
+              "range": true,
+              "format": "time_series",
+              "legendFormat": "CPU"
+            },
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"memory\",unit=\"byte\"}))) and on(app) label_replace(vector(1), \"app\", \"audiobookshelf\", \"\", \"\")",
+              "refId": "B",
+              "instant": false,
+              "range": true,
+              "format": "time_series",
+              "legendFormat": "RAM"
+            }
+          ],
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 16,
+          "type": "row",
+          "title": "Navidrome \u00b7 mini-PC / k3s",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 22,
+            "w": 24,
+            "h": 1
+          },
+          "panels": []
+        },
+        {
+          "id": 17,
+          "title": "Kubernetes state",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 23,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "mappings": [
+                {
+                  "type": "range",
+                  "options": {
+                    "from": 0,
+                    "to": 0.999999,
+                    "result": {
+                      "text": "Not ready",
+                      "color": "orange"
+                    }
+                  }
+                },
+                {
+                  "type": "range",
+                  "options": {
+                    "from": 1,
+                    "to": 100,
+                    "result": {
+                      "text": "Ready",
+                      "color": "green"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Navidrome",
+              "url": "https://navidrome.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "title": "CPU \u00b7 % of VM",
+          "type": "stat",
+          "gridPos": {
+            "x": 6,
+            "y": 23,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "5-minute average as share of k3s VM CPU capacity.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "decimals": 3
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Navidrome",
+              "url": "https://navidrome.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "title": "RAM",
+          "type": "stat",
+          "gridPos": {
+            "x": 12,
+            "y": 23,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Application working set; excludes sidecars and backup jobs.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Navidrome",
+              "url": "https://navidrome.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "title": "App/config storage",
+          "type": "stat",
+          "gridPos": {
+            "x": 18,
+            "y": 23,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Kubernetes state is available/desired replicas, not an HTTP check. CPU now is a 5m average in CPU cores; 1h uses the full previous hour. N/A means no metric, not zero. App/config excludes media PVCs. External applications are inventory only in phase 1. Storage is kubelet-reported config PVC usage, not a directory-size measurement. Navidrome reports shared filesystem usage above its requested PVC size; that invalid footprint is hidden as N/A pending a directory collector.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=\"audiobookshelf\",persistentvolumeclaim=~\"config-storage-pvc|metadata-storage-pvc\"} or (kubelet_volume_stats_used_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"} <= on (namespace,persistentvolumeclaim) group_left max by (namespace,persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"})) or kubelet_volume_stats_used_bytes{namespace=\"linkding\",persistentvolumeclaim=\"linkding-storage-pvc-v1\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Navidrome",
+              "url": "https://navidrome.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "title": "CPU / RAM \u00b7 % of k3s VM",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 27,
+            "w": 24,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "refId": "A",
+              "instant": false,
+              "range": true,
+              "format": "time_series",
+              "legendFormat": "CPU"
+            },
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"memory\",unit=\"byte\"}))) and on(app) label_replace(vector(1), \"app\", \"navidrome\", \"\", \"\")",
+              "refId": "B",
+              "instant": false,
+              "range": true,
+              "format": "time_series",
+              "legendFormat": "RAM"
+            }
+          ],
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 22,
+          "type": "row",
+          "title": "Linkding \u00b7 mini-PC / k3s",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 31,
+            "w": 24,
+            "h": 1
+          },
+          "panels": []
+        },
+        {
+          "id": 23,
+          "title": "Kubernetes state",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 32,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "mappings": [
+                {
+                  "type": "range",
+                  "options": {
+                    "from": 0,
+                    "to": 0.999999,
+                    "result": {
+                      "text": "Not ready",
+                      "color": "orange"
+                    }
+                  }
+                },
+                {
+                  "type": "range",
+                  "options": {
+                    "from": 1,
+                    "to": 100,
+                    "result": {
+                      "text": "Ready",
+                      "color": "green"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((max by (namespace) (kube_deployment_status_replicas_available{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}) / clamp_min(max by (namespace) (kube_deployment_spec_replicas{namespace=~\"audiobookshelf|navidrome|linkding\",deployment=~\"audiobookshelf|navidrome|linkding\"}), 1)), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Linkding",
+              "url": "https://linkding.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "title": "CPU \u00b7 % of VM",
+          "type": "stat",
+          "gridPos": {
+            "x": 6,
+            "y": 32,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "5-minute average as share of k3s VM CPU capacity.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              },
+              "decimals": 3
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Linkding",
+              "url": "https://linkding.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 25,
+          "title": "RAM",
+          "type": "stat",
+          "gridPos": {
+            "x": 12,
+            "y": 32,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Application working set; excludes sidecars and backup jobs.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Linkding",
+              "url": "https://linkding.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "title": "App/config storage",
+          "type": "stat",
+          "gridPos": {
+            "x": 18,
+            "y": 32,
+            "w": 6,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Kubernetes state is available/desired replicas, not an HTTP check. CPU now is a 5m average in CPU cores; 1h uses the full previous hour. N/A means no metric, not zero. App/config excludes media PVCs. External applications are inventory only in phase 1. Storage is kubelet-reported config PVC usage, not a directory-size measurement. Navidrome reports shared filesystem usage above its requested PVC size; that invalid footprint is hidden as N/A pending a directory collector.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=\"audiobookshelf\",persistentvolumeclaim=~\"config-storage-pvc|metadata-storage-pvc\"} or (kubelet_volume_stats_used_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"} <= on (namespace,persistentvolumeclaim) group_left max by (namespace,persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\"navidrome\",persistentvolumeclaim=\"navidrome-data-pvc\"})) or kubelet_volume_stats_used_bytes{namespace=\"linkding\",persistentvolumeclaim=\"linkding-storage-pvc-v1\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "refId": "A",
+              "instant": true,
+              "range": false,
+              "format": "time_series",
+              "legendFormat": "{{app}}"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "links": [
+            {
+              "title": "Open Linkding",
+              "url": "https://linkding.vitalyguzun.com",
+              "targetBlank": true
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "title": "CPU / RAM \u00b7 % of k3s VM",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 36,
+            "w": 24,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "N/A",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (rate(container_cpu_usage_seconds_total{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}[5m])))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"cpu\",unit=\"core\"}))) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "refId": "A",
+              "instant": false,
+              "range": true,
+              "format": "time_series",
+              "legendFormat": "CPU"
+            },
+            {
+              "expr": "(100 * (label_replace(label_replace(label_replace((sum by (namespace) (max by (namespace,pod,container) (container_memory_working_set_bytes{namespace=~\"audiobookshelf|navidrome|linkding\",container=~\"audiobookshelf|navidrome|linkding\"}))), \"app\", \"$1\", \"namespace\", \"(.+)\"), \"host\", \"mini-pc\", \"\", \"\"), \"runtime\", \"k3s\", \"\", \"\")) / scalar(sum(kube_node_status_capacity{resource=\"memory\",unit=\"byte\"}))) and on(app) label_replace(vector(1), \"app\", \"linkding\", \"\", \"\")",
+              "refId": "B",
+              "instant": false,
+              "range": true,
+              "format": "time_series",
+              "legendFormat": "RAM"
+            }
+          ],
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 28,
+          "title": "Phase 1 \u00b7 Data coverage",
+          "type": "text",
+          "gridPos": {
+            "x": 0,
+            "y": 40,
+            "w": 24,
+            "h": 3
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "N/A",
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "blue"
+              }
+            },
+            "overrides": []
+          },
+          "targets": [],
+          "options": {
+            "mode": "markdown",
+            "content": "CPU/RAM shares use the **k3s VM** capacity. Kubernetes readiness is shown until HTTPS checks are added. **App/config** excludes media; Navidrome storage is unavailable until a reliable directory measurement exists. Jellyfin and Synology application resources, media sizes and user listening/viewing hours follow in later phases."
+          }
+        }
+      ]
+    }
